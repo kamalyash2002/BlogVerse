@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <!-- Latest Posts -->
+      <main class="post blog-post col-lg-8"> 
+        <div class="container">
+          <div class="post-single">
+            <div class="post-thumbnail"><img src="{{ blog.blog_image.url }}" alt="..." class="img-fluid"></div>
+            <div class="post-details">
+              
+              <h1>{{blog.blog_title }}</h1>
+              <div class="post-footer d-flex align-items-center flex-column flex-sm-row"><a href="#" class="author d-flex align-items-center flex-wrap">
+                <div class="avatar"><img src="{{ blog.author.user_profile.profile_pic.url }}" alt="..." class="img-fluid"></div>
+                  <div class="title"><span>{{ blog.author }}</span></div></a>
+                <div class="d-flex align-items-center flex-wrap">       
+                  <div class="date"><i class="icon-clock"></i> Published Date: {{ blog.publish_date }}</div>
+                  <div class="date"> Udated At: {{ blog.update_date}}</div>
+                  
+                  <div class="comments meta-last"><i class="icon-comment"></i>{{ comment_data.count }}</div>
+                </div>
+              </div>
+              <div class="post-body">
+                {{blog.blog_content| linebreaks}}
+              </div>
+              
+              
+                  
+            
+              <div class="post-comments">
+                <header>
+                  <h3 class="h6">Post Comments<span class="no-of-comments">({{ comment_data.count }})</span></h3>
+                </header>
+                {% for com in comment_data %}
+                <div class="comment">
+                  <div class="comment-header d-flex justify-content-between">
+                    <div class="user d-flex align-items-center">
+                      <div class="image"><img src="{{ com.user.user_profile.profile_pic.url }}" alt="..." class="img-fluid rounded-circle"></div>
+                      <div class="title"><strong>{{ com.user }}</strong><span class="date">{{ com.comment_date }}</span></div>
+                    </div>
+                  </div>
+                  <div class="comment-body">
+                    <p>{{ com.comment }}</p>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="add-comment">
+                {% if user.is_authenticated %}
+                <header>
+                  <h3 class="h6">Add a Comment</h3>
+                </header>
+                <form method="POST" class="commenting-form">
+                  {% csrf_token %}
+                  <div class="row">
+                    
+                    <div class="form-group col-md-12">
+                      <textarea name="comment" id="usercomment" placeholder="Type your comment" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                      <button type="submit" class="btn btn-secondary">Submit Comment</button>
+                    </div>
+                  </div>
+                </form>
+                {% else %}
+                <h4>Please Login/Register to add comment </h4>
+                {% endif %}
+
+              </div>
+              
+              
+            </div>
+          </div>
+        </div>
+      </main>
+      <aside class="col-lg-4">
+        <!-- Widget [Search Bar Widget]-->
+        <div class="widget search">
+          <header>
+            <h3 class="h6">Search the blog</h3>
+          </header>
+          <form action="#" class="search-form">
+            <div class="form-group">
+              <input type="search" placeholder="What are you looking for?">
+              <button type="submit" class="submit"><i class="icon-search"></i></button>
+            </div>
+          </form>
+        </div>
+        <!-- Widget [Latest Posts Widget]        -->
+        <div class="widget latest-posts">
+          <header>
+            <h3 class="h6">Latest Posts</h3>
+          </header>
+          <div class="blog-posts mb-3">
+              {% for post in latest_post %}
+              <a href="{% url 'blog_detail' slug=post.slug %}">
+              <div class="item d-flex align-items-center">
+                <div class="image"><img src="{{post.author.user_profile.profile_pic.url }}" alt="..." class="img-fluid rounded-circle"></div>
+                <div class="title"><strong>{{ post.blog_title }}</strong>
+                  <div class="d-flex align-items-center">
+                    <div class="comments"><i class="fa fa-pencil" aria-hidden="true"></i> {{ post.author}}| </div>
+                    <div class="comments"><i class="icon-comment"></i>{{ post.blog_comment.count }}</div>
+                  </div>
+                </div>
+              </div></a>
+              {% endfor %}
+            </div>
+        </div>
+        
+      </aside>
+    </div>
+  </div>
+{% endblock %}
